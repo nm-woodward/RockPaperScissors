@@ -2,6 +2,9 @@
 let playerScore = 0;
 let computerScore = 0;
 
+const playerScoreDiv = document.querySelector('.player-score');
+const computerScoreDiv = document.querySelector('.computer-score');
+
 
 function randomIntFromInterval(min, max) { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min)
@@ -27,8 +30,7 @@ function solicitPlayerSelection() {
 
 //solicitPlayerSelection();
 
-function playRound() {
-    let playerChoice = solicitPlayerSelection();
+function playRound(playerChoice) {
     let computerChoice = computerPlay();
     console.log(playerChoice);
     console.log(computerChoice);
@@ -58,6 +60,9 @@ function playRound() {
         }
     }
     console.log(gameResultMessage);
+    updateScores();
+    provideGameResult(gameResultMessage);
+    checkForFinal();
 
 }
 
@@ -84,4 +89,51 @@ function game() {
 
 }
 
-game();
+//game();
+
+const buttons = document.querySelectorAll('button');
+
+
+buttons.forEach((button) => {
+    button.addEventListener('mousedown', (e) => {
+        let playerChoice = e.toElement.textContent.toLowerCase();
+        playRound(playerChoice);
+    })
+});
+
+function updateScores() {
+    playerScoreDiv.textContent = playerScore;
+    computerScoreDiv.textContent = computerScore;
+}
+
+function provideGameResult(gameResultMessage) {
+    const gameResultDiv = document.querySelector('.gameresult-text');
+    gameResultDiv.textContent = gameResultMessage;
+
+}
+
+function checkForFinal() {
+    if (playerScore >= 5) {
+        const finalResultDiv = document.querySelector('.finalresult');
+        const scoresSectionDiv = document.querySelector('.scoressection');
+        
+        finalResultDiv.textContent = "Congratulations! You were the first to 5 wins!";
+
+        scoresSectionDiv.classList.toggle('winner');
+        finalResultDiv.classList.toggle('winner');
+
+        buttons.forEach((button) => button.disabled=true);
+    }
+
+    if (computerScore >= 5) {
+        const finalResultDiv = document.querySelector('.finalresult');
+        const scoresSectionDiv = document.querySelector('.scoressection');
+        
+        finalResultDiv.textContent = "Sorry, you lost the 5-round game!";
+
+        scoresSectionDiv.classList.toggle('loser');
+        finalResultDiv.classList.toggle('loser');
+
+        buttons.forEach((button) => button.disabled=true);
+    }
+}
